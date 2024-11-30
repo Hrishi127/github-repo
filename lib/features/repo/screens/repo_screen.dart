@@ -39,6 +39,7 @@ class RepoScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              controller: context.read<RepoBloc>().searchController,
               decoration: InputDecoration(
                 hintText: 'Search global repositories...',
                 suffixIcon: IconButton(
@@ -52,8 +53,7 @@ class RepoScreen extends StatelessWidget {
                 ),
               ),
               onSubmitted: (value) {
-                context.read<RepoBloc>().add(SearchReposEvent(value.trim())
-                );
+                context.read<RepoBloc>().add(SearchReposEvent(value.trim()));
               },
             ),
           ),
@@ -90,18 +90,16 @@ class RepoScreen extends StatelessWidget {
 
           return NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels ==
-                  scrollInfo.metrics.maxScrollExtent) {
+              if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                 // Trigger load more when scrolled to bottom
+                debugPrint(context.read<RepoBloc>().searchController.text.trim());
                 context.read<RepoBloc>().add(FetchReposEvent(searchText: context.read<RepoBloc>().searchController.text.trim()));
                 return true;
               }
               return false;
             },
             child: ListView.builder(
-              controller: context
-                  .read<RepoBloc>()
-                  .scrollController,
+              controller: context.read<RepoBloc>().scrollController,
               itemCount: repos.length + (state is RepoLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
                 // Handle loading more indicator
@@ -172,44 +170,46 @@ class RepoScreen extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                repo.name,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              if (repo.description != null)
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 Text(
-                  repo.description!,
-                  style: const TextStyle(fontSize: 16),
+                  repo.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.calendar_today, size: 16,),
-                  const SizedBox(width: 8),
-                  Text('Created: ${repo.lastUsed != null ? timeago.format(repo.lastUsed!) : 'Unknown'}'),
-                ],
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  // Open repository URL
-                  context.read<RepoBloc>().add(OpenRepoUrlEvent(repo.url));
-                  Navigator.pop(context);
-                },
-                child: const Text('View on GitHub'),
-              ),
-            ],
+                const SizedBox(height: 10),
+                if (repo.description != null)
+                  Text(
+                    repo.description!,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.calendar_today, size: 16,),
+                    const SizedBox(width: 8),
+                    Text('Created: ${repo.lastUsed != null ? timeago.format(repo.lastUsed!) : 'Unknown'}'),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    // Open repository URL
+                    context.read<RepoBloc>().add(OpenRepoUrlEvent(repo.url));
+                    Navigator.pop(context);
+                  },
+                  child: const Text('View on GitHub'),
+                ),
+              ],
+            ),
           ),
         );
       },

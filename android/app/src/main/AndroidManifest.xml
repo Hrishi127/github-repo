@@ -19,7 +19,7 @@
     </queries>
 
     <application
-        android:label="github_repo"
+        android:label="Github Repo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

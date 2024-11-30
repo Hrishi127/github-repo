@@ -21,12 +21,6 @@ class RepoBloc extends Bloc<RepoEvent, RepoState> {
     on<FetchReposEvent>(_fetchRepos);
     on<OpenRepoUrlEvent>(_openRepoUrl);
     on<SearchReposEvent>(_searchRepos);
-
-    scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
-        add(FetchReposEvent(searchText: currentSearchText));
-      }
-    });
   }
 
   Future<void> _fetchRepos(FetchReposEvent event, Emitter<RepoState> emit) async {
@@ -43,7 +37,7 @@ class RepoBloc extends Bloc<RepoEvent, RepoState> {
       String apiUrl;
 
       if (currentSearchText.isNotEmpty) {
-        // Search only in user's repositories
+        // Search global repositories
         apiUrl = 'https://api.github.com/search/repositories?q=$currentSearchText+page=$currentPage&per_page=10';
       } else {
         // Fetch all user repositories
