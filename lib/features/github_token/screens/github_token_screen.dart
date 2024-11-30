@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:github_repo/core/constants.dart';
+import 'package:github_repo/features/repo/bloc/repo_bloc.dart';
+import 'package:github_repo/features/repo/bloc/repo_event.dart';
 import '../bloc/github_token_bloc.dart';
 import '../bloc/github_token_event.dart';
 import '../bloc/github_token_state.dart';
@@ -17,7 +20,18 @@ class GithubTokenScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Enter GitHub Personal Access Token:'),
+            Row(
+              children: [
+                const Text('Enter GitHub Personal Access Token'),
+                BlocProvider(
+                  create: (context) => RepoBloc(),
+                  child: IconButton(
+                    onPressed: () => context.read<RepoBloc>().add(OpenRepoUrlEvent(Constants.githubTokenUrl)),
+                    icon: const Icon(Icons.open_in_new, size: 16,)
+                  )
+                )
+              ],
+            ),
             const SizedBox(height: 16),
             TextField(
               controller: context.read<GitHubTokenBloc>().tokenController,
