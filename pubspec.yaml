@@ -28,8 +28,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  timeago:
   equatable:
   http:
+  url_launcher:
   shared_preferences:
   flutter_bloc:
   flutter:

@@ -13,3 +13,5 @@ class ValidateTokenEvent extends GitHubTokenEvent {
   @override
   List<Object?> get props => [token];
 }
+
+class LogoutEvent extends GitHubTokenEvent {}

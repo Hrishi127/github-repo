@@ -1,19 +1,32 @@
-import '../models/github_repo.dart';
+import 'package:equatable/equatable.dart';
+import '../models/repo.dart';
 
-abstract class RepoState {}
+abstract class RepoState extends Equatable {
+  final List<Repo> repos;
 
-class RepoInitial extends RepoState {}
+  const RepoState(this.repos);
 
-class RepoLoading extends RepoState {}
+  @override
+  List<Object?> get props => [repos];
+}
+
+class RepoLoading extends RepoState {
+  const RepoLoading(super.repos);
+}
+
+class RepoLoadingMore extends RepoState {
+  const RepoLoadingMore(super.repos);
+}
 
 class RepoLoaded extends RepoState {
-  final List<GitHubRepo> repos;
-
-  RepoLoaded(this.repos);
+  const RepoLoaded(super.repos);
 }
 
 class RepoError extends RepoState {
   final String message;
 
-  RepoError(this.message);
+  const RepoError(super.repos, this.message);
+
+  @override
+  List<Object?> get props => [repos, message];
 }

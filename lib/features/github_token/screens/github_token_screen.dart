@@ -9,7 +9,6 @@ class GithubTokenScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tokenController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(title: const Text('GitHub Token Checker')),
@@ -21,7 +20,7 @@ class GithubTokenScreen extends StatelessWidget {
             const Text('Enter GitHub Personal Access Token:'),
             const SizedBox(height: 16),
             TextField(
-              controller: tokenController,
+              controller: context.read<GitHubTokenBloc>().tokenController,
               decoration: const InputDecoration(
                 hintText: 'Paste your token here',
                 border: OutlineInputBorder(),
@@ -30,7 +29,7 @@ class GithubTokenScreen extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                final token = tokenController.text.trim();
+                final token = context.read<GitHubTokenBloc>().tokenController.text.trim();
                 if (token.isNotEmpty) {
                   context.read<GitHubTokenBloc>().add(ValidateTokenEvent(token));
                 }
